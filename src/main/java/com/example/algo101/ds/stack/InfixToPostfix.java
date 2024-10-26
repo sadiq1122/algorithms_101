@@ -27,31 +27,41 @@ public class InfixToPostfix {
         for (int i = 0; i < infixExp.length(); i++) {
             char ch = infixExp.charAt(i);
             if (!operators.contains(ch)) {
-                result.append(ch);
+                StringBuilder op = new StringBuilder();
+                while (i < infixExp.length() && !operators.contains(infixExp.charAt(i))) {
+                    op.append(infixExp.charAt(i));
+                    i++;
+                }
+                i--;
+                op.append(" ");
+                result.append(op);
             } else if (ch == '(') {
                 stack.push(ch);
             } else if (ch == ')') {
                 while (stack.peek() != '(') {
                     result.append(stack.pop());
+                    result.append(" ");
                 }
                 stack.pop();
             } else {
                 while (!stack.isEmpty() && getPrecedence(ch) <= getPrecedence(stack.peek())) {
                     result.append(stack.pop());
+                    result.append(" ");
                 }
                 stack.push(ch);
             }
         }
         while (!stack.isEmpty()) {
             result.append(stack.pop());
+            result.append(" ");
         }
 
         return result.toString();
     }
 
     public static void main(String[] args) {
-        String infix = "a+b*(c^d-e)^(f+g*h)-i";
-        //abcd^e-fgh*+^*+i-
+        String infix = "(A-B)*(C/(D+E)+F)";
+        //expected res - AB-CDE+/F+*
         InfixToPostfix runner = new InfixToPostfix();
         System.out.println(runner.getPostFixExp(infix));
     }
