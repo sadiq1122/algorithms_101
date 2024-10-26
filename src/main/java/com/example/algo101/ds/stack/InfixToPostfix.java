@@ -1,32 +1,32 @@
 package com.example.algo101.ds.stack;
 
+import java.util.Set;
 import java.util.Stack;
 
 public class InfixToPostfix {
 
-    private Stack<Character> stack = new Stack<>();
-    private StringBuilder result = new StringBuilder();
+    private final Stack<Character> stack = new Stack<>();
+
+    private final Set<Character> operators = Set.of('^', '+', '-', '*', '/', '(', ')');
 
 
+    // Get precedence of operators
     private int getPrecedence(Character operator) {
-        if (operator == '^') return 4;
-        else if (operator == '/' || operator == '*') return 3;
-        else if (operator == '+' || operator == '-') return 2;
-        else return -1;
-    }
-
-    private boolean isOperator(Character token) {
-        if (token == '^' || token == '*' || token == '/' || token == '+' || token == '-' || token == '(' || token == ')')
-            return true;
-        return false;
+        return switch (operator) {
+            case '^' -> 4;
+            case '*', '/' -> 3;
+            case '+', '-' -> 2;
+            default -> -1;
+        };
     }
 
 
     public String getPostFixExp(String infixExp) {
-        result = new StringBuilder();
+        StringBuilder result = new StringBuilder();
+        stack.clear();
         for (int i = 0; i < infixExp.length(); i++) {
             char ch = infixExp.charAt(i);
-            if (!isOperator(ch)) {
+            if (!operators.contains(ch)) {
                 result.append(ch);
             } else if (ch == '(') {
                 stack.push(ch);
